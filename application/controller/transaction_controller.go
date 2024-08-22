@@ -13,6 +13,17 @@ type WithdrawalRequest struct {
 
 var validate = validator.New()
 
+// CreateTransaction godoc
+//
+//	@Summary		Create a transaction
+//	@Description	Create a transaction with the requested amount
+//	@Tags			transaction
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		WithdrawalRequest	true	"Withdrawal Request"
+//	@Success		200		{object}	entities.WithdrawalStatement
+//	@Failure		400		{object}	fiber.Map	"Error response with validation or processing issues"
+//	@Router			/transaction [post]
 func CreateTransaction(c *fiber.Ctx) error {
 	var request WithdrawalRequest
 	if err := c.BodyParser(&request); err != nil {
@@ -40,6 +51,11 @@ func CreateTransaction(c *fiber.Ctx) error {
 	return c.JSON(withdrawalAmount)
 }
 
+// isValidAmount checks if the requested amount is valid for withdrawal.
+// This function is used internally by CreateTransaction.
 func isValidAmount(amount int) bool {
+	if amount < 0 {
+		return false
+	}
 	return amount%10 != 3 && amount%10 != 1
 }

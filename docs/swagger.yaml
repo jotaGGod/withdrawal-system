@@ -1,0 +1,54 @@
+definitions:
+  controller.WithdrawalRequest:
+    properties:
+      amount:
+        type: integer
+    required:
+    - amount
+    type: object
+  entities.WithdrawalStatement:
+    properties:
+      requestedAmount:
+        type: integer
+      usedBankNotes:
+        additionalProperties:
+          type: integer
+        type: object
+    type: object
+  fiber.Map:
+    additionalProperties: true
+    type: object
+info:
+  contact: {}
+  description: This is an API for a withdrawal system.
+  termsOfService: http://swagger.io/terms/
+  title: withdrawal-system API
+  version: "1.0"
+paths:
+  /transaction:
+    post:
+      consumes:
+      - application/json
+      description: Create a transaction with the requested amount
+      parameters:
+      - description: Withdrawal Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.WithdrawalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.WithdrawalStatement'
+        "400":
+          description: Error response with validation or processing issues
+          schema:
+            $ref: '#/definitions/fiber.Map'
+      summary: Create a transaction
+      tags:
+      - transaction
+swagger: "2.0"
