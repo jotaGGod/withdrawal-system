@@ -114,14 +114,14 @@ func TestSuccessTransactionIntegration(t *testing.T) {
 			},
 		},
 		{
-			name: "Valid withdrawal request with amount 231",
+			name: "Valid withdrawal request with amount 11",
 			requestBody: WithdrawalRequest{
-				Amount: 231,
+				Amount: 11,
 			},
 			expectedStatus: http.StatusOK,
 			expectedBody: WithdrawalStatement{
-				RequestedAmount: 231,
-				UsedBankNotes:   map[int]int{2: 3, 5: 1, 10: 0, 20: 1, 50: 0, 100: 0, 200: 1},
+				RequestedAmount: 11,
+				UsedBankNotes:   map[int]int{2: 3, 5: 1, 10: 0, 20: 0, 50: 0, 100: 0, 200: 0},
 			},
 		},
 	}

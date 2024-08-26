@@ -6,16 +6,18 @@ import (
 	"log"
 )
 
-type (
-	WithdrawalStatement struct {
-		RequestedAmount int         `json:"requestedAmount"`
-		UsedBankNotes   map[int]int `json:"usedBankNotes"`
-	}
+type WithdrawalStatement struct {
+	RequestedAmount int         `json:"requestedAmount"`
+	UsedBankNotes   map[int]int `json:"usedBankNotes"`
+}
 
-	WithdrawalRequest struct {
-		Amount int `json:"amount" validate:"required,numeric"`
-	}
-)
+type WithdrawalRequest struct {
+	Amount int `json:"amount" validate:"required,numeric"`
+}
+
+func (a WithdrawalRequest) isInvalidAmount() bool {
+	return a.Amount < 0 || a.Amount == 1 || a.Amount == 3
+}
 
 var validate = validator.New()
 
@@ -57,16 +59,8 @@ func CreateTransaction(c *fiber.Ctx) error {
 	})
 }
 
-func (a WithdrawalRequest) isInvalidAmount() bool {
-	return a.Amount < 0 || a.Amount == 1 || a.Amount == 3
-}
-
 var existingBankNotes = []int{200, 100, 50, 20, 10, 5, 2}
 
-// @Summary		Calculate the banknotes for the requested amount
-// @Description	Returns a map of banknotes used to fulfill the requested amount
-// @Param			requestedAmount	query		int			true	"Amount requested for withdrawal"
-// @Success		200				{object}	map[int]int	"Returns a map of banknotes used"
 func calculateBankNotes(requestedAmount int) map[int]int {
 	var usedBankNotes = map[int]int{200: 0, 100: 0, 50: 0, 20: 0, 10: 0, 5: 0, 2: 0}
 	for _, bankNote := range existingBankNotes {
