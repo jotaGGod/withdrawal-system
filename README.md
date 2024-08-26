@@ -12,7 +12,8 @@ Withdrawal System Project is an API that allows users to request a withdrawal am
 ## Endpoints
 
 #### Transaction
-- **POST** `/transaction`: Make a withdrawal
+- **POST** `localhost:3000/transaction`: Make a withdrawal
+- **GET** `localhost:3000/swagger`: Swagger documentation
 ## Environment Setting
 
 1. **Clone the repository**
@@ -37,5 +38,5 @@ Withdrawal System Project is an API that allows users to request a withdrawal am
 ```
 5. **Run Tests (Optional)**
 ```bash
- go test ./...
+ go test ./... -v
 ```
