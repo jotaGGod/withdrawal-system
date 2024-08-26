@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.WithdrawalRequest"
+                            "$ref": "#/definitions/application.WithdrawalRequest"
                         }
                     }
                 ],
@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entities.WithdrawalStatement"
+                            "$ref": "#/definitions/application.WithdrawalStatement"
                         }
                     },
                     "400": {
@@ -58,7 +58,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controller.WithdrawalRequest": {
+        "application.WithdrawalRequest": {
             "type": "object",
             "required": [
                 "amount"
@@ -69,7 +69,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entities.WithdrawalStatement": {
+        "application.WithdrawalStatement": {
             "type": "object",
             "properties": {
                 "requestedAmount": {

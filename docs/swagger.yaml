@@ -1,12 +1,12 @@
 definitions:
-  controller.WithdrawalRequest:
+  application.WithdrawalRequest:
     properties:
       amount:
         type: integer
     required:
     - amount
     type: object
-  entities.WithdrawalStatement:
+  application.WithdrawalStatement:
     properties:
       requestedAmount:
         type: integer
@@ -36,14 +36,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/controller.WithdrawalRequest'
+          $ref: '#/definitions/application.WithdrawalRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entities.WithdrawalStatement'
+            $ref: '#/definitions/application.WithdrawalStatement'
         "400":
           description: Error response with validation or processing issues
           schema:

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
-	"github.com/jotaGGod/withdrawal-system/application/routes"
+	"github.com/jotaGGod/withdrawal-system/application"
 	_ "github.com/jotaGGod/withdrawal-system/docs"
 	"log"
 )
@@ -15,9 +15,7 @@ import (
 func main() {
 	app := fiber.New()
 	app.Get("/swagger/*", swagger.HandlerDefault)
-
-	routes.HanddleTransactionRoutes(app)
-
+	app.Add(fiber.MethodPost, "/transaction", application.CreateTransaction)
 	err := app.Listen(":3000")
 	if err != nil {
 		log.Println(err.Error())

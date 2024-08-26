@@ -1,12 +1,9 @@
-package integration
+package application
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/gofiber/fiber/v2"
-	"github.com/jotaGGod/withdrawal-system/application/controller"
-	"github.com/jotaGGod/withdrawal-system/application/entities"
-	"github.com/jotaGGod/withdrawal-system/application/routes"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -15,9 +12,7 @@ import (
 
 func setupApp() *fiber.App {
 	app := fiber.New()
-
-	routes.HanddleTransactionRoutes(app)
-
+	app.Add(fiber.MethodPost, "/transaction", CreateTransaction)
 	return app
 }
 
@@ -26,96 +21,107 @@ func TestSuccessTransactionIntegration(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		requestBody    controller.WithdrawalRequest
+		requestBody    WithdrawalRequest
 		expectedStatus int
-		expectedBody   entities.WithdrawalStatement
+		expectedBody   WithdrawalStatement
 	}{
 		{
 			name: "Valid withdrawal request with amount 100",
-			requestBody: controller.WithdrawalRequest{
+			requestBody: WithdrawalRequest{
 				Amount: 100,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
+			expectedBody: WithdrawalStatement{
 				RequestedAmount: 100,
 				UsedBankNotes:   map[int]int{2: 0, 5: 0, 10: 0, 20: 0, 50: 0, 100: 1, 200: 0},
 			},
 		},
 		{
 			name: "Valid withdrawal request with amount 2222",
-			requestBody: controller.WithdrawalRequest{
+			requestBody: WithdrawalRequest{
 				Amount: 2222,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
+			expectedBody: WithdrawalStatement{
 				RequestedAmount: 2222,
 				UsedBankNotes:   map[int]int{2: 1, 5: 0, 10: 0, 20: 1, 50: 0, 100: 0, 200: 11},
 			},
 		},
 		{
-			name: "Valid withdrawal request with amount 30334",
-			requestBody: controller.WithdrawalRequest{
-				Amount: 30334,
+			name: "Valid withdrawal request with amount 30333",
+			requestBody: WithdrawalRequest{
+				Amount: 30333,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
-				RequestedAmount: 30334,
-				UsedBankNotes:   map[int]int{2: 2, 5: 0, 10: 1, 20: 1, 50: 0, 100: 1, 200: 151},
+			expectedBody: WithdrawalStatement{
+				RequestedAmount: 30333,
+				UsedBankNotes:   map[int]int{2: 4, 5: 1, 10: 0, 20: 1, 50: 0, 100: 1, 200: 151},
 			},
 		},
 		{
-			name: "Valid withdrawal request with amount 400455",
-			requestBody: controller.WithdrawalRequest{
-				Amount: 400455,
+			name: "Valid withdrawal request with amount 400451",
+			requestBody: WithdrawalRequest{
+				Amount: 400451,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
-				RequestedAmount: 400455,
-				UsedBankNotes:   map[int]int{2: 0, 5: 1, 10: 0, 20: 0, 50: 1, 100: 0, 200: 2002},
+			expectedBody: WithdrawalStatement{
+				RequestedAmount: 400451,
+				UsedBankNotes:   map[int]int{2: 3, 5: 1, 10: 0, 20: 2, 50: 0, 100: 0, 200: 2002},
 			},
 		},
 		{
 			name: "Valid withdrawal request with amount 5005556",
-			requestBody: controller.WithdrawalRequest{
+			requestBody: WithdrawalRequest{
 				Amount: 5005556,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
+			expectedBody: WithdrawalStatement{
 				RequestedAmount: 5005556,
 				UsedBankNotes:   map[int]int{2: 3, 5: 0, 10: 0, 20: 0, 50: 1, 100: 1, 200: 25027},
 			},
 		},
 		{
 			name: "Valid withdrawal request with amount 60006667",
-			requestBody: controller.WithdrawalRequest{
+			requestBody: WithdrawalRequest{
 				Amount: 60006667,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
+			expectedBody: WithdrawalStatement{
 				RequestedAmount: 60006667,
 				UsedBankNotes:   map[int]int{2: 1, 5: 1, 10: 1, 20: 0, 50: 1, 100: 0, 200: 300033},
 			},
 		},
 		{
 			name: "Valid withdrawal request with amount 700007759",
-			requestBody: controller.WithdrawalRequest{
+			requestBody: WithdrawalRequest{
 				Amount: 700007759,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
+			expectedBody: WithdrawalStatement{
 				RequestedAmount: 700007759,
 				UsedBankNotes:   map[int]int{2: 2, 5: 1, 10: 0, 20: 0, 50: 1, 100: 1, 200: 3500038},
 			},
 		},
 		{
 			name: "Valid withdrawal request with amount 8000880829",
-			requestBody: controller.WithdrawalRequest{
+			requestBody: WithdrawalRequest{
 				Amount: 8000880829,
 			},
 			expectedStatus: http.StatusOK,
-			expectedBody: entities.WithdrawalStatement{
+			expectedBody: WithdrawalStatement{
 				RequestedAmount: 8000880829,
 				UsedBankNotes:   map[int]int{2: 2, 5: 1, 10: 0, 20: 1, 50: 0, 100: 0, 200: 40004404},
+			},
+		},
+		{
+			name: "Valid withdrawal request with amount 231",
+			requestBody: WithdrawalRequest{
+				Amount: 231,
+			},
+			expectedStatus: http.StatusOK,
+			expectedBody: WithdrawalStatement{
+				RequestedAmount: 231,
+				UsedBankNotes:   map[int]int{2: 3, 5: 1, 10: 0, 20: 1, 50: 0, 100: 0, 200: 1},
 			},
 		},
 	}
@@ -128,7 +134,7 @@ func TestSuccessTransactionIntegration(t *testing.T) {
 			resp, err := app.Test(req, -1)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedStatus, resp.StatusCode)
-			var responseBody entities.WithdrawalStatement
+			var responseBody WithdrawalStatement
 			err = json.NewDecoder(resp.Body).Decode(&responseBody)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedBody, responseBody)
@@ -148,7 +154,7 @@ func TestTransactionIntegrationError(t *testing.T) {
 		{
 			name: "Invalid withdrawal request with invalid field",
 			requestBody: map[string]interface{}{
-				"amount": "100", // Valor como string, quando deveria ser numérico
+				"amount": "100",
 			},
 			expectedStatus: http.StatusBadRequest,
 			expectedError: map[string]interface{}{
